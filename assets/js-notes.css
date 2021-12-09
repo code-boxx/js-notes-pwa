@@ -1,0 +1,109 @@
+/* (A) FONTS */
+/* GOOGLE MATERIAL ICONS - https://fonts.google.com/icons */
+* { font-family: arial, sans-serif; }
+html, body, input, button, textarea, select { font-size: 18px; }
+@font-face {
+  font-family: "Material Icons";
+  src:url(maticon.woff2) format("woff2");
+}
+.mi {
+  font-family: "Material Icons";
+  font-weight: 400;
+  font-style: normal;
+  font-size: 30px;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased
+}
+
+/* (B) ENTIRE PAGE */
+html, body {
+  padding: 0;
+  margin: 0 auto;
+  max-width: 1000px;
+  background: #e7ecf0;
+}
+input[type=button], input[type=submit], button { cursor: pointer; }
+.pageL {} .pageE {} .ninja { display: none; }
+.err {
+  padding: 10px;
+  margin: 10px;
+  background: #ffd5d5;
+  border: 1px solid #ff1212;
+}
+
+/* (C) HEADER */
+#nHead {
+  position: sticky;
+  display: flex;
+  color: #fff;
+  background: #2f6ab3;
+  padding: 20px;
+}
+#nHeadTitle {
+  font-size: 26px;
+  flex-grow: 1;
+}
+#nHeadBtn button {
+  background: 0;
+  border: 0;
+  color: #fff;
+}
+
+/* (D) NOTES LIST */
+#nList .note {
+  display: flex;
+  background: #fff;
+  padding: 10px;
+  margin: 20px;
+}
+#nList .nLeft { flex-grow: 1; }
+#nList .nTitle { font-weight: 700; }
+#nList .nText { color: #888; margin: 10px 0; }
+#nList .nTime { font-size: 14px; color: #899dff; }
+#nList .nEdit, #nList .nDel {
+  background: 0;
+  border: 0;
+  color: #767676;
+}
+
+/* (E) ADD/EDIT NOTE FORM */
+#nForm {
+  padding: 20px;
+  background: #fbfdff;
+}
+#nForm label, #nForm input, #nForm textarea {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10px;
+}
+#nText { min-height: 300px; }
+#nSave {
+  margin-top: 20px;
+  border: 0;
+  color: #fff;
+  background: #bd2929;
+}
+
+/* (F) BOTTOM NOTIFICATION */
+#nNotify {
+  position: fixed;
+  bottom : 0; left : 0;
+  width: 100%;
+  background: #d2deff;
+  padding: 10px;
+  cursor: pointer;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+#nNotify.show {
+  visibility: visible;
+  opacity: 1;
+}

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- TITLE + CHARSET + DESCRIPTION + VIEWPORT + FAVICON -->
+    <title>Offline JS Notes</title>
+    <meta charset="utf-8">
+    <meta name="description" content="Offline Javascript Notes App">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5">
+    <link rel="icon" href="assets/favicon.png" type="image/png">
+
+    <!-- WEB APP MANIFEST -->
+    <!-- https://web.dev/add-manifest/ -->
+    <link rel="manifest" href="js-notes-manifest.json">
+
+    <!-- ANDROID + CHROME + APPLE + WINDOWS APP -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="white">
+    <link rel="apple-touch-icon" href="icon-512.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Hello World">
+    <meta name="msapplication-TileImage" content="icon-512.png">
+    <meta name="msapplication-TileColor" content="#ffffff">
+
+    <!-- STYLESHEET + JAVASCRIPT -->
+    <link rel="stylesheet" href="assets/js-notes.css">
+    <script async src="assets/js-notes.js"></script>
+  </head>
+  <body>
+    <!-- (A) HEADER -->
+    <header id="nHead">
+      <!-- (A1) TITLE -->
+      <div id="nHeadTitle">
+        <span id="nHeadL" class="pageL">My Notes</span>
+        <span id="nHeadE" class="pageE ninja">Add Note</span>
+      </div>
+
+      <!-- (A2) BUTTONS -->
+      <div id="nHeadBtn">
+        <button id="nAdd" class="pageL"><span class="mi">add_box</span></button>
+        <button id="nBack" class="pageE ninja"><span class="mi">reply</span></button>
+        <button id="nDel" class="pageE ninja"><span class="mi">delete</span></button>
+      </div>
+    </header>
+
+    <!-- (B) NOTES LIST -->
+    <div id="nList" class="pageL"></div>
+
+    <!-- (C) ADD/EDIT NOTE FORM -->
+    <form id="nForm" class="pageE ninja">
+      <label for="nTitle">Title</label>
+      <input id="nTitle" type="text" required/>
+      <label for="nText">Text</label>
+      <textarea id="nText" required></textarea>
+      <input id="nSave" type="submit" value="Save"/>
+    </form>
+
+    <!-- (D) BOTTOM NOTIFICATION -->
+    <div id="nNotify"></div>
+  </body>
+</html>
