@@ -35,10 +35,3 @@ SOFTWARE.
 ## DOCUMENTATION
 ---
 Please visit https://code-boxx.com/javascript-notes-pwa/ for the documentation.
-
-
----
-## CREDITS
----
-HTML5 QRCode Scanner https://github.com/mebjashtml5-qrcode
-QRCode Generator https://davidshimjs.github.io/qrcodejs/
