@@ -1,13 +1,21 @@
 // (A) FILES TO CACHE
 const cName = "MyNotes",
 cFiles = [
+  // (A1) ICONS + FONTS
   "assets/favicon.png",
   "assets/icon-512.png",
-  "assets/js-notes.css",
-  "assets/js-notes.js",
   "assets/maticon.woff2",
+  // (A2) CSS
+  "assets/js-notes.css",
+  // (A3) JS
+  "assets/cb.js",
+  "assets/js-notes.js",
+  // (A4) MANIFEST
   "js-notes-manifest.json",
-  "js-notes.html"
+  // (A5) PAGES
+  "js-notes.html",
+  "form.inc",
+  "home.inc"
 ];
 
 // (B) CREATE/INSTALL CACHE
