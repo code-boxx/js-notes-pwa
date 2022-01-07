@@ -1,6 +1,6 @@
 var notes = {
   // (A) INIT APP
-  iDB : null, iTX : null, // idb object & transaction
+  iDB : null, iTX : null, iName : "MyNotes", // idb object & transaction
   init : () => {
     // (A1) HTML + FLAGS STUFF
     let pass = true,
@@ -44,7 +44,7 @@ var notes = {
     // (A6) INDEXED DATABASE
     if (pass) {
       // (A6-1) OPEN "MYNOTES" DATABASE
-      let req = window.indexedDB.open("MyNotes", 1);
+      let req = window.indexedDB.open(notes.iName, 1);
 
       // (A6-2) ON DATABASE ERROR
       req.onerror = (evt) => {
@@ -63,7 +63,7 @@ var notes = {
 
         // VERSION 1
         if (evt.oldVersion < 1) {
-          let store = notes.iDB.createObjectStore("MyNotes", {
+          let store = notes.iDB.createObjectStore(notes.iName, {
             keyPath: "id",
             autoIncrement: true
           });
@@ -75,8 +75,8 @@ var notes = {
         notes.iDB = evt.target.result;
         notes.iTX = () => {
           return notes.iDB
-          .transaction("MyNotes", "readwrite")
-          .objectStore("MyNotes");
+          .transaction(notes.iName, "readwrite")
+          .objectStore(notes.iName);
         };
         notes.start()
       };
@@ -112,7 +112,7 @@ var notes = {
   // (D) SHOW ADD/EDIT NOTE FORM
   nid : null, // current note id
   show : (id) => {
-    notes.nid = id==undefined ? null : id;
+    notes.nid = id!==undefined ? +id : null;
     window.location.hash = "form";
   },
 
