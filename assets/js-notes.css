@@ -94,7 +94,6 @@ div.error {
   display: flex;
   align-items: center;
   margin-bottom: 20px; padding: 20px;
-  border-radius: 10px;
   background: var(--color-white);
 }
 .note-left { flex-grow: 1; }
