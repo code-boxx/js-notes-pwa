@@ -55,7 +55,7 @@ div.error {
 
 /* (E) DIALOG */
 #cb-info {
-  position: fixed; top: 50%; left: 50%;
+  position: fixed; top: 50%; left: 50%; z-index: 999;
   transform: translate(-50%, -50%);
   text-align: center;
   padding: 20px;
