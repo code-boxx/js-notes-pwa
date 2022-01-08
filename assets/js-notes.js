@@ -1,93 +1,95 @@
 var notes = {
-  // (A) INIT APP
+  // (A) HELPER FUNCTION TO GENERATE ERROR MESSAGE
+  err : (msg) => {
+    let row = document.createElement("div");
+    row.className = "error";
+    row.innerHTML = msg;
+    document.getElementById("cb-main").appendChild(row);
+  },
+
+  // (B) INIT APP
   iDB : null, iTX : null, iName : "MyNotes", // idb object & transaction
-  init : () => {
-    // (A1) HTML + FLAGS STUFF
-    let pass = true,
-        page = document.getElementById("cb-main"),
-        err = (msg) => {
-          let row = document.createElement("div");
-          row.className = "error";
-          row.innerHTML = msg;
-          page.appendChild(row);
-        };
-
-    // (A2) REQUIREMENT - INDEXED DB
-    window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-    if (!window.indexedDB) {
-      err("Your browser does not support indexed database.");
-      pass = false;
+  ready : 0, // number of ready components
+  init : (ready) => {
+    // (B1) ALL CHECKS & COMPONENTS GOOD TO GO?
+    if (ready==1) {
+      notes.ready++;
+      if (notes.ready==2) { cb.load(); }
     }
 
-    // (A3) REQUIREMENT - SERVICE WORKER
-    if (!"serviceWorker" in navigator) {
-      err("Your browser does not support service workers.");
-      pass = false;
-    }
+    // (B2) REQUIREMENT CHECKS & SETUP
+    else {
+      // (B2-1) REQUIREMENT - INDEXED DB
+      let pass = true;
+      window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+      if (!window.indexedDB) {
+        notes.err("Your browser does not support indexed database.");
+        pass = false;
+      }
 
-    // (A4) REQUIREMENT - CACHE STORAGE
-    if (!caches) {
-      err("Your browser does not support cache storage.");
-      pass = false;
-    }
+      // (B2-2) REQUIREMENT - SERVICE WORKER
+      if (!"serviceWorker" in navigator) {
+        notes.err("Your browser does not support service workers.");
+        pass = false;
+      }
 
-    // (A5) SERVICE WORKER
-    if (pass) {
-      navigator.serviceWorker.register("js-notes-sw.js")
-      .then((reg) => { notes.start(); })
-      .catch((err) => {
-        err("Service worker init error - " + evt.message);
-        console.error(err);
-      });
-    }
+      // (B2-3) REQUIREMENT - CACHE STORAGE
+      if (!"caches" in window) {
+        notes.err("Your browser does not support cache storage.");
+        pass = false;
+      }
 
-    // (A6) INDEXED DATABASE
-    if (pass) {
-      // (A6-1) OPEN "MYNOTES" DATABASE
-      let req = window.indexedDB.open(notes.iName, 1);
+      // (B2-4) SERVICE WORKER
+      if (pass) {
+        navigator.serviceWorker.register("js-notes-sw.js")
+        .then((reg) => { notes.init(1); })
+        .catch((err) => {
+          notes.err("Service worker init error - " + evt.message);
+          console.error(err);
+        });
+      }
 
-      // (A6-2) ON DATABASE ERROR
-      req.onerror = (evt) => {
-        err("Indexed DB init error - " + evt.message);
-        console.error(evt);
-      };
+      // (B2-5) INDEXED DATABASE
+      if (pass) {
+        // OPEN "MYNOTES" DATABASE
+        let req = window.indexedDB.open(notes.iName, 1);
 
-      // (A6-3) UPGRADE NEEDED
-      req.onupgradeneeded = (evt) => {
-        // INIT UPGRADE
-        notes.iDB = evt.target.result;
-        notes.iDB.onerror = (evt) => {
-          notes.err("Indexed DB upgrade error - " + evt.message);
+        // ON DATABASE ERROR
+        req.onerror = (evt) => {
+          notes.err("Indexed DB init error - " + evt.message);
           console.error(evt);
         };
 
-        // VERSION 1
-        if (evt.oldVersion < 1) {
-          let store = notes.iDB.createObjectStore(notes.iName, {
-            keyPath: "id",
-            autoIncrement: true
-          });
-        }
-      };
+        // UPGRADE NEEDED
+        req.onupgradeneeded = (evt) => {
+          // INIT UPGRADE
+          notes.iDB = evt.target.result;
+          notes.iDB.onerror = (evt) => {
+            notes.err("Indexed DB upgrade error - " + evt.message);
+            console.error(evt);
+          };
 
-      // (A6-4) OPEN DATABASE OK - REGISTER IDB OBJECTS
-      req.onsuccess = (evt) => {
-        notes.iDB = evt.target.result;
-        notes.iTX = () => {
-          return notes.iDB
-          .transaction(notes.iName, "readwrite")
-          .objectStore(notes.iName);
+          // VERSION 1
+          if (evt.oldVersion < 1) {
+            let store = notes.iDB.createObjectStore(notes.iName, {
+              keyPath: "id",
+              autoIncrement: true
+            });
+          }
         };
-        notes.start()
-      };
-    }
-  },
 
-  // (B) START APP
-  ready : 0, // number of ready components
-  start : () => {
-    notes.ready++;
-    if (notes.ready==2) { cb.load(); }
+        // OPEN DATABASE OK - REGISTER IDB OBJECTS
+        req.onsuccess = (evt) => {
+          notes.iDB = evt.target.result;
+          notes.iTX = () => {
+            return notes.iDB
+            .transaction(notes.iName, "readwrite")
+            .objectStore(notes.iName);
+          };
+          notes.init(1)
+        };
+      }
+    }
   },
 
   // (C) LIST NOTES
