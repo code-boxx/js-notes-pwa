@@ -1,186 +1,107 @@
 var notes = {
-  // (A) HELPER FUNCTION TO GENERATE ERROR MESSAGE
-  err : (msg) => {
-    let row = document.createElement("div");
-    row.className = "error";
-    row.innerHTML = msg;
-    document.getElementById("cb-main").appendChild(row);
-  },
-
-  // (B) INIT APP
-  iDB : null, iTX : null, iName : "MyNotes", // idb object & transaction
-  ready : 0, // number of ready components
-  init : (ready) => {
-    // (B1) ALL CHECKS & COMPONENTS GOOD TO GO?
-    if (ready==1) {
-      notes.ready++;
-      if (notes.ready==2) { cb.load(); }
+  // (A) INIT APP
+  init : async () => {
+    // (A1) REQUIREMENTS CHECK - INDEXED DB
+    if (!IDB) {
+      alert("Your browser does not support indexed database.");
+      return;
     }
 
-    // (B2) REQUIREMENT CHECKS & SETUP
-    else {
-      // (B2-1) REQUIREMENT - INDEXED DB
-      let pass = true;
-      window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-      if (!window.indexedDB) {
-        notes.err("Your browser does not support indexed database.");
-        pass = false;
-      }
+    // (A2) REQUIREMENTS CHECK - STORAGE CACHE
+    if (!"caches" in window) {
+      alert("Your browser does not support cache storage.");
+      return;
+    }
 
-      // (B2-2) REQUIREMENT - SERVICE WORKER
-      if (!"serviceWorker" in navigator) {
-        notes.err("Your browser does not support service workers.");
-        pass = false;
-      }
+    // (A3) REGISTER SERVICE WORKER
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("CB-worker.js");
+    }
 
-      // (B2-3) REQUIREMENT - CACHE STORAGE
-      if (!"caches" in window) {
-        notes.err("Your browser does not support cache storage.");
-        pass = false;
-      }
-
-      // (B2-4) SERVICE WORKER
-      if (pass) {
-        navigator.serviceWorker.register("js-notes-sw.js")
-        .then((reg) => { notes.init(1); })
-        .catch((err) => {
-          notes.err("Service worker init error - " + evt.message);
-          console.error(err);
-        });
-      }
-
-      // (B2-5) INDEXED DATABASE
-      if (pass) {
-        // OPEN "MYNOTES" DATABASE
-        let req = window.indexedDB.open(notes.iName, 1);
-
-        // ON DATABASE ERROR
-        req.onerror = (evt) => {
-          notes.err("Indexed DB init error - " + evt.message);
-          console.error(evt);
-        };
-
-        // UPGRADE NEEDED
-        req.onupgradeneeded = (evt) => {
-          // INIT UPGRADE
-          notes.iDB = evt.target.result;
-          notes.iDB.onerror = (evt) => {
-            notes.err("Indexed DB upgrade error - " + evt.message);
-            console.error(evt);
-          };
-
-          // VERSION 1
-          if (evt.oldVersion < 1) {
-            let store = notes.iDB.createObjectStore(notes.iName, {
-              keyPath: "id",
-              autoIncrement: true
-            });
-          }
-        };
-
-        // OPEN DATABASE OK - REGISTER IDB OBJECTS
-        req.onsuccess = (evt) => {
-          notes.iDB = evt.target.result;
-          notes.iTX = () => {
-            return notes.iDB
-            .transaction(notes.iName, "readwrite")
-            .objectStore(notes.iName);
-          };
-          notes.init(1)
-        };
-      }
+    // (A4) DATABASE + INTERFACE
+    if (await notesDB.init()) {
+      notes.toggle("A");
+      notes.list();
     }
   },
+
+  // (B) TOGGLE PAGE
+  toggle : p => document.getElementById("pg"+p).classList.toggle("show"),
 
   // (C) LIST NOTES
-  list : () => {
-    // (C1) LIST INIT
-    let nList = document.getElementById("notes-list"),
-        nTemplate = document.getElementById("note-template").content;
-
-    // (C2) DRAW LIST
+  list : async () => {
+    // (C1) GET & "RESET" HTML LIST
+    let nList = document.getElementById("nList");
     nList.innerHTML = "";
-    notes.iTX().getAll().onsuccess = (evt) => { for (let n of evt.target.result) {
-      let row = nTemplate.cloneNode(true);
-      row.querySelector(".note-title").textContent = n.title;
-      row.querySelector(".note-text").textContent = n.text;
-      row.querySelector(".note-time").textContent = n.time;
-      row.querySelector(".note-edit").onclick = () => { notes.show(n.id); };
-      row.querySelector(".note-del").onclick = () => { notes.del(n.id); };
-      nList.appendChild(row);
-    }};
-  },
 
+    // (C2) GET & DRAW ENTRIES
+    for (let n of await notesDB.tx("getAll", "notes")) {
+      let d = document.createElement("div");
+      d.className = "note";
+      d.style.color = n.tc;
+      d.style.backgroundColor = n.bc;
+      d.innerHTML = `<h1 class="title">${n.title}</h1>
+      <div class="txt">${n.txt}</div>`;
+      d.onclick = () => notes.show(n.id);
+      nList.appendChild(d);
+    }
+  },
+  
   // (D) SHOW ADD/EDIT NOTE FORM
   nid : null, // current note id
-  show : (id) => {
-    notes.nid = id!==undefined ? +id : null;
-    window.location.hash = "form";
-  },
+  show : async (id) => {
+    // (D1) EDIT NOTE
+    if (id) {
+      notes.nid = +id;
+      let note = await notesDB.tx("get", "notes", notes.nid);
+      document.querySelector("#nTitle").value = note.title;
+      document.querySelector("#nText").value = note.txt;
+      document.querySelector("#ntColor").value = note.tc;
+      document.querySelector("#nbColor").value = note.bc;
+      document.querySelector("#nDel").style.display = "block";
+    }
 
-  // (E) FOR EDIT NOTE - LOAD THE GIVEN NOTE ID
-  load : () => {
-    // (E1) GET HEADER HTML ELEMENTS
-    let htitle = document.getElementById("note-form-title"),
-        hdel = document.getElementById("note-form-del");
-
-    // (E2) SET TITLE + DELETE
-    htitle.innerHTML = notes.nid==null ? "Add Note" : "Edit Note" ;
-    if (notes.nid == null) { hdel.classList.add("ninja"); }
+    // (D2) ADD NOTE
     else {
-      hdel.onclick = () => { notes.del(notes.nid); };
-      hdel.classList.remove("ninja");
+      notes.nid = null;
+      document.querySelector("#pgB form").reset();
+      document.querySelector("#nDel").style.display = "none";
     }
 
-    // (E3) EDIT NOTE
-    if (notes.nid != null) {
-      let req = notes.iTX().get(notes.nid);
-      req.onsuccess = () => {
-        let n = req.result;
-        document.getElementById("note-title").value = n.title;
-        document.getElementById("note-text").value = n.text;
-      };
-    }
+    // (D3) OPEN NOTE FORM
+    notes.toggle("B");
   },
 
-  // (F) SAVE NOTE
+  // (E) SAVE NOTE
   save : () => {
-    // (F1) DATA TO SAVE
+    // (E1) DATA TO SAVE
     let data = {
-      title : document.getElementById("note-title").value,
-      text : document.getElementById("note-text").value,
-      time : new Intl.DateTimeFormat("en-GB", {
-        day: "numeric", month: "short", year: "numeric",
-        hour: "numeric", minute: "numeric", second: "numeric",
-        hour12: true
-      }).format(new Date())
+      title : document.getElementById("nTitle").value,
+      txt : document.getElementById("nText").value,
+      tc : document.getElementById("ntColor").value,
+      bc : document.getElementById("nbColor").value
     };
 
-    // (F2) SAVE ENTRY
+    // (E2) SAVE ENTRY
     if (notes.nid) {
       data.id = notes.nid;
-      notes.iTX().put(data);
-    } else { notes.iTX().add(data); }
+      notesDB.tx("put", "notes", data);
+    } else { notesDB.tx("add", "notes", data); }
 
-    // (F3) DONE!
-    cb.info("Note saved");
+    // (E3) DONE!
     notes.nid = null;
-    window.location.hash = "home";
+    notes.toggle("B");
+    notes.list();
     return false;
   },
 
-  // (G) DELETE NOTE
+  // (F) DELETE NOTE
   //  id : delete this note id
-  del : (id) => { if (confirm("Delete note?")) {
-    // (G1) DELETE NOTE
-    notes.iTX().delete(id);
-
-    // (G2) RELOAD
-    cb.info("Note deleted");
-    let hash = window.location.hash;
-    if (hash=="" || hash=="#home") { notes.list(); }
-    else { window.location.hash = "home"; }
+  del : async () => { if (confirm("Delete note?")) {
+    await notesDB.tx("del", "notes", notes.nid);
+    notes.nid = null;
+    notes.toggle("B");
+    notes.list();
   }}
 };
-
 window.addEventListener("DOMContentLoaded", notes.init);

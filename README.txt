@@ -1,25 +1,7 @@
-## JS NOTES PWA
-This is a Notes Progressive Web App (PWA) made in pure HTML, CSS, Javascript. Yes, it is installable and capable of running offline completely.
-<br><br>
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+LICENSE
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-## SCREENSHOTS
-<p float="left">
-  <img width="250" style="inline-block" src="https://github.com/code-boxx/js-notes-pwa/blob/main/assets/PWA-notes-1.png">
-  <img width="250" style="inline-block" src="https://github.com/code-boxx/js-notes-pwa/blob/main/assets/PWA-notes-2.png">
-  <img width="250" style="inline-block" src="https://github.com/code-boxx/js-notes-pwa/blob/main/assets/PWA-notes-3.png">
-</p><br>
-
-## REQUIREMENTS
-1) "Grade A" browser. With support for service worker, indexed database, cache storage.
-2) https:// is required for the features to work.
-3) http://localhost works fine for testing too.
-<br><br>
-
-## DOCUMENTATION
-Visit https://code-boxx.com/javascript-notes-pwa/ for a quick walkthrough of how this thing works.
-<br><br>
-
-## LICENSE
 Copyright by Code Boxx
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -39,3 +21,9 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+DOCUMENTATION
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Please visit https://code-boxx.com/ for more.

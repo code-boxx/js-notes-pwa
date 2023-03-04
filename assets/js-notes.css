@@ -1,107 +1,139 @@
-/* (A) VARS */
-:root {
-  --color-black: #333;
-  --color-grey: #767676;
-  --color-white: #fff;
-  --color-red: #c51212;
-  --color-green: #04836b;
-  --color-blue: #063cb7;
-  --color-bg-page: #e8f0f7;
-  --color-bg-head: #1671e1;
-}
-
-/* (B) GOOGLE MATERIAL ICONS - https://fonts.google.com/icons */
+/* (A) GOOGLE MATERIAL ICONS */
 @font-face{font-family:"Material Icons";src:url(maticon.woff2) format("woff2")}
 .mi{font-family:"Material Icons";font-weight:400;font-style:normal;text-decoration:none;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;word-wrap:normal;direction:ltr;-webkit-font-feature-settings:"liga";-webkit-font-smoothing:antialiased}
 
-/* (C) GLOBAL */
-html, body {
-  max-width: 1000px;
-  margin: 0 auto; padding: 0;
-  background: var(--color-bg-page);
-}
+/* (B) WHOLE SITE */
 * {
-  font-family: arial, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
   box-sizing: border-box;
 }
-div.error {
-  margin: 5px; padding: 5px;
-  color: var(--color-white);
-  background: var(--color-red);
+body {
+  margin: 0; padding: 0;
+  background: #f2f2f2;
+  overflow-x: hidden;
 }
-.ninja { display: none; }
-
-/* (D) FORM */
-/* (D1) BUTTONS */
-.btn-ico, .btn-ico-grey, .btn-red, .btn-green, .btn-blue {
-  border: 0; padding: 10px;
-  cursor: pointer;
-  color: var(--color-white);
+#pgA, #pgB, #pgC {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s;
 }
-.btn-red, .btn-green, .btn-blue { font-size: 1.1em; }
-.btn-ico, .btn-ico-grey { background: 0; font-size: 2em; }
-.btn-ico-grey { color: var(--color-grey); }
-.btn-red { background: var(--color-red); }
-.btn-green { background: var(--color-green); }
-.btn-blue { background: var(--color-blue); }
+#pgA.show, #pgB.show, #pgC.show {
+  opacity: 1;
+  visibility: visible;
+}
+#pgB, #pgC {
+  background: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  top: 0; left: 0; z-index: 999;
+  width: 100vw; height: auto;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-/* (D2) FORM FIELDS */
-.form-field {
-  font-size: 1.1em;
-  display: block;
-  width: 100%;
+/* (C) NOTES LIST */
+/* (C1) PAGE WRAPPER */
+#pgA {
+  max-width: 1000px;
+  margin: 0 auto;
   padding: 10px;
 }
 
-/* (E) DIALOG */
-#cb-info {
-  position: fixed; top: 50%; left: 50%; z-index: 999;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  padding: 20px;
+/* (C2) ADD NOTE BUTTON */
+#nAdd {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  font-size: 40px;
+  color: #767676;
+  background: #fff;
+  cursor: pointer;
+}
+
+/* (C3) NOTES LIST */
+#nList {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 10px;
+  grid-gap: 10px;
+}
+@media screen AND (max-width: 768px) {
+  #nList { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media screen AND (max-width: 600px) {
+  #nList { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+#nList .note {
+  padding: 10px;
   border-radius: 10px;
-  color: var(--color-white);
-  transition: opacity 0.4s;
-  visibility: hidden; opacity: 0
+  cursor: pointer;
 }
-#cb-info.ok, #cb-info.no {
-  visibility: visible; opacity: 1;
-}
-#cb-info.ok { background: var(--color-blue); }
-#cb-info.no { background: var(--color-red); }
-#cb-info-ico { font-size: 3em; }
-
-/* (F) THIS APP */
-/* (F1) SHARED */
-.cb-head { padding: 10px 20px; }
-.cb-body, .cb-form { padding: 20px; }
-
-/* (F2) HEADER */
-.cb-head {
-  display: flex;
-  align-items: center;
-  color: var(--color-white);
-  background: var(--color-bg-head);
-}
-.cb-head-title {
-  flex-grow: 1;
-  margin: 0;
-  font-size: 1.7em;
+#nList .title {
+  font-size: 26px;
+  padding: 0;
+  margin: 0 0 5px 0;
 }
 
-/* (F3) NOTES LIST */
-.note-row {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px; padding: 20px;
-  background: var(--color-white);
+/* (C4) ABOUT BUTTON */
+#nAbout {
+  padding : 20px 0;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  color: #9b9b9b;
+  cursor: pointer;
 }
-.note-left { flex-grow: 1; }
-.note-title { font-weight: 700; }
-.note-text { color: var(--color-grey); margin: 10px 0; }
-.note-time { color: var(--color-blue); }
 
-/* (F4) NOTE FORM */
-#notes-form { background: var(--color-white); }
-#note-text { min-height: 300px; resize: none; }
-#note-save { margin-top: 30px; }
+/* (D) NOTE FORM */
+#pgB form {
+  min-width: 320px; max-width: 400px;
+  background: #f2f2f2;
+  padding: 15px;
+}
+label, input[type=text], input[type=color], textarea {
+  display: block;
+  width: 100%;
+  border: 0;
+}
+label { padding: 10px 0; }
+input[type=text], textarea { padding: 10px; }
+textarea { height: 150px; resize: none; }
+#nAction {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+#nAction input {
+  margin: 1px;
+  padding: 10px;
+  font-size: 20px;
+  color: #fff;
+  border: 0;
+  background: #3440d3;
+  cursor: pointer;
+}
+
+/* (E) ABOUT PAGE */
+#aboutPop {
+  position: relative;
+  background: #fff;
+}
+#aboutCX {
+  position: absolute;
+  top: 0; right: 0;
+  font-size: 32px;
+  color: #fff;
+  background: #9d2121;
+  border-radius: 50%;
+  cursor: pointer;
+}
+#aboutHead {
+  width: 100%;
+  max-height: 450px;
+  object-fit: contain;
+}
+#aboutLinks {
+  padding: 20px;
+}

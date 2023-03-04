@@ -10,7 +10,7 @@
 
     <!-- WEB APP MANIFEST -->
     <!-- https://web.dev/add-manifest/ -->
-    <link rel="manifest" href="js-notes-manifest.json">
+    <link rel="manifest" href="CB-manifest.json">
 
     <!-- ANDROID + CHROME + APPLE + WINDOWS APP -->
     <meta name="mobile-web-app-capable" content="yes">
@@ -24,17 +24,67 @@
 
     <!-- STYLESHEET + JAVASCRIPT -->
     <link rel="stylesheet" href="assets/js-notes.css">
+    <script defer src="assets/js-notes-db.js"></script>
     <script defer src="assets/js-notes.js"></script>
-    <script defer src="assets/cb.js"></script>
   </head>
   <body>
-    <!-- (A) MAIN CONTENTS -->
-    <div id="cb-main"></div>
-
-    <!-- (B) INFO BOX -->
-    <div id="cb-info">
-      <div id="cb-info-ico" class="mi"></div>
-      <div id="cb-info-txt"></div>
+    <!-- (A) NOTES LIST -->
+    <div id="pgA">
+      <div id="nAdd" class="mi" onclick="notes.show()">
+        add_circle_outline
+      </div>
+      <div id="nList"></div>
+      <div id="nAbout" onclick="notes.toggle('C')">
+        <i class="mi">help_outline</i> ABOUT JS NOTES PWA
+      </div>
     </div>
+
+    <!-- (B) NOTE FORM -->
+    <div id="pgB"><form onsubmit="return notes.save()">
+      <label>Title</label>
+      <input id="nTitle" type="text" autocomplete="off" required>
+      <label>Text</label>
+      <textarea id="nText" autocomplete="off" required></textarea>
+      <label>Text Color</label>
+      <input id="ntColor" type="color" value="#ffffff">
+      <label>Background Color</label>
+      <input id="nbColor" type="color" value="#000000">
+      <div id="nAction">
+        <input type="button" class="mi" value="reply" onclick="notes.toggle('B')">
+        <input type="button" id="nDel" class="mi" value="delete" onclick="notes.del()">
+        <input type="submit" class="mi" value="save">
+      </div>
+    </form></div>
+
+    <!-- (C) ABOUT -->
+    <div id="pgC"><div id="aboutPop">
+      <div id="aboutCX" class="mi" onclick="notes.toggle('C')">
+        clear
+      </div>
+      <img src="assets/head-notes-pwa.webp" id="aboutHead">
+
+      <div id="aboutLinks">
+        <h3>Links & Documentation</h3>
+        <ul>
+          <li><a href="https://code-boxx.com/javascript-notes-pwa/" target="_blank">JS Notes PWA Official Webpage</a></li>
+          <li><a href="https://github.com/code-boxx/js-notes-pwa" target="_blank">JS Notes PWA GitHub</a></li>
+        </ul>
+
+        <h3>Socials</h3>
+        <ul>
+          <li><a href="https://code-boxx.com/" target="_blank">Code Boxx Webpage</a></li>
+          <li><a href="https://payhip.com/codeboxx" target="_blank">Code Boxx Store (Buy a little something to support us?)</a></li>
+          <li><a href="https://www.youtube.com/c/CodeBoxx" target="_blank">Code Boxx YouTube</a></li>
+          <li><a href="https://www.pinterest.com/codeboxx/" target="_blank">Code Boxx Pinterest</a></li>
+          <li><a href="https://github.com/code-boxx/" target="_blank">GitHub</a></li>
+          <li><a href="https://codepen.io/code-boxx" target="_blank">CodePen</a></li>
+        </ul>
+
+        <h3>Built With</h3>
+        <ul>
+          <li><a href="https://developers.google.com/fonts/docs/material_icons" target="_blank">Material Icons</a></li>
+        </ul>
+      </div>
+    </div></div>
   </body>
 </html>
